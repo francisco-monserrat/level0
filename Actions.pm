@@ -16,7 +16,7 @@ use Ihl ; # The Incident Handling Language Parser ...
 my $server ; # internal variable for the RTIR server, assigned at login
 my $username ; # Internal variable for the RTIR user, assigned at login
 my $password ; # internal variable for the RTIR user passwor,d, assigned at login
-
+my $search_query ; # Internal variable for RTIR search query of new tickets
 
 my $pathdisplay="/RTIR/Display.html?id=" ;
 
@@ -80,6 +80,9 @@ sub rulessplit  {
         }
        
 sub load_rules {
+		my $rules= $_[0] ;
+		if ($rules ne "")  { $rulesfile= $rules ; }
+
 		open FILE, $rulesfile;
 		my $txt =  join "" , <FILE> ;
 		close FILE ;
@@ -134,8 +137,8 @@ sub login{
 	$server=$_[0] ;
 	$username=$_[1] ;
 	$password=$_[2] ;
-
-	Rtactions::RT_login  ($server,$username,$password) ;
+	$search_query=$_[3] ;
+	Rtactions::RT_login  ($server,$username,$password,$search_query) ;
 }
 
 sub list {

@@ -16,6 +16,7 @@ my $rt ;  # Internal variable for the RT instance
 my $server ; # internal variable for the RTIR server, assigned at login
 my $username ; # Internal variable for the RTIR user, assigned at login
 my $password ; # internal variable for the RTIR user passwor,d, assigned at login
+my $search_query= "Status = 'new' and Queue = 'Incident Reports' " ;
 
 #
 # Currently implemented commands
@@ -31,7 +32,7 @@ sub RT_login{
 	$server=$_[0] ;
 	$username=$_[1] ;
 	$password=$_[2] ;
-
+	$search_query=$_[3] ;
 	
 	$rt = RT::Client::REST->new(
    	server  => $server ,
@@ -48,7 +49,7 @@ sub RT_list {
 
 my @ids = $rt->search(
                type => 'ticket',
-               query => "Status = 'new' and Queue = 'Incident Reports' ",
+               query => $search_query,
              );
 my $count=0 ;
              for my $id (@ids) {

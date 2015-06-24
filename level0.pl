@@ -24,6 +24,9 @@ use Actions ;
 my $server="http://rt.rediris.es" ;
 my $username ;
 my $password ;
+my $search= "Status = 'new' and Queue = 'Incident Reports' " ;
+my $rules ="ihl-rules.xml" ;
+
 
 # Funciones locales
 sub input {
@@ -44,14 +47,18 @@ my $prompt =" Command ?> " ;
 my $term = Term::ReadLine->new('Level 0 for Incident Response') ;
 my $linea ;
 
-$server= input ("Servidor RT (defaults to $server )",$server) ;
+$server= input ("RT server  (defaults to $server): ",$server) ;
 
-$username= input ( "introduce el usuario: " ) ;
+$username= input ( "Username: " ) ;
 $password=  read_password (' password : ') ;
 
-Actions::load_rules() ;
+$search= input ("Search Query, (defaults to $search): ",$search) ;
 
-Actions::login($server,$username,$password) ;
+$rules = input ("XML rules file (defaults to $rules): ",$rules) ;
+
+Actions::load_rules($rules) ;
+
+Actions::login($server,$username,$password,$search) ;
 
 
 
