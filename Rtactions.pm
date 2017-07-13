@@ -65,9 +65,11 @@ my $count=0 ;
 }
 
 sub RT_get_tickets {
+	my $query= $_[0] ;
+	print "DBG llamada rt-search con query= $query" ;
 	my @ids = $rt->search(
            type => 'ticket',
-             query => "Status = 'new' and Queue = 'Incident Reports' ",
+             query => $query,
          );
 	return @ids ;
 	}
@@ -91,8 +93,8 @@ sub RT_info {
 	else {
 		print "ticket $id information \n" ;
 		print  "id : ", $ticket->{'id'} , "; Owner : ", $ticket->{'Owner'}, "  State: ", $ticket->{'Status'} ," \n" ;
-		print "From: ", $ticket->{'Requestors'} , "Subject: " , $ticket->{'Subject'}, "\n" ;
-		print "IP addresses  : ", $ticket->{'CF.{IP}'}, "\n" ;
+		print "From: ", $ticket->{'Requestors'} . "\nSubject: " , $ticket->{'Subject'}, "\n" ;
+#		print "IP addresses  : ", $ticket->{'CF.{IP}'}, "\n" ;
 	
 	}
 

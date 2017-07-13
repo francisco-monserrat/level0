@@ -10,6 +10,7 @@
 package Ihl;
 use vars qw ( @ISA );
 use strict;
+no if $] >= 5.018, warnings => "experimental::smartmatch";
 
 @ISA= qw ( Parse::Yapp::Driver );
 #Included Parse/Yapp/Driver.pm file----------------------------------------

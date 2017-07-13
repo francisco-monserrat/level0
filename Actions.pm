@@ -20,7 +20,7 @@ my $search_query ; # Internal variable for RTIR search query of new tickets
 
 my $pathdisplay="/RTIR/Display.html?id=" ;
 
-my $dbg =0 ;
+my $dbg =1;
 
 sub dbg {
 	if($dbg == 1)  { 
@@ -147,7 +147,7 @@ sub list {
 
 
 sub get_tickets {
-	return Rtactions::RT_get_tickets() ;
+	return Rtactions::RT_get_tickets(@_) ;
 	}
 
 
@@ -263,19 +263,22 @@ sub do_process {
 		my $id = $_[0];
 #		my $ticket = $rt->show(type => 'ticket', id => $id); 
 		my %ticket= Rtactions::RT_ticket_content($id) ;
+
 		my $mode ="test" ;
 		my $fin =0 ; 
 		my %localvars = () ; 
+		dbg ("do process of ticket id $id");
 		for (my $k=0 ;  ($k!=@rules && $fin != 1)  ; $k++) {
 			my $cond = rules_translate ($rules[$k]->{'condition'} ) ;
-#			dbg ("condition a evluar es $cond-x-") ;
-			#print "from = $ticket->{'Requestors'} subject $ticket->{'Subject'}\n" ; 
+			#	dbg ("Regla $k: condition a evaluar es $cond") ;
+			#dbg ("\$ticket{'Requestors'} ="  . $ticket{'Requestors'} );
+			#dbg ("\$ticket{'Subject'} =" .  $ticket{'Subject'} ) ; 
 			if (eval  ($cond)) {
-				dbg ("$cond evalua a true !!"); 
-				dbg ("Regla $k concuerda. En ticket $id hay que ejecutar  $rules[$k]->{'actions'}") ;
+				#	dbg ("$cond evalua a true !!"); 
+				# dbg ("Regla $k concuerda. En ticket $id hay que ejecutar  $rules[$k]->{'actions'}") ;
 
 				$fin= do_actions ($k, $rules[$k]->{'actions'},$id) ;
-
+				#dbg ("resultado de la ejecución es fin =$fin ") ;
 #			print "Rule $k match\n: execute $rules->[$k]->{'actions'} , ticket $id\n" ;
 
 			#		$fin = do_actions ($k, $rules[$k]->{'actions'} , $id  ) ;
@@ -292,6 +295,7 @@ sub process {
 	my $type=shift (@_ ) ;
 	my ($start, $end );
 	my @list ;
+	dbg "llamada a process con type=$type" ;
 	if  ($type eq "range" ) {
 			$start=shift (@_ ) ; ;
 			$end=shift  (@_) ;
@@ -303,7 +307,8 @@ sub process {
 		pop @list ; # required last value in $list is not a ticket
 		}
 	elsif ($type eq "all") {
-		@list= get_tickets() ; }
+		dbg ("Process of all the tickets") ;
+		@list= get_tickets( $search_query ) ; }
 	foreach my $k (@list) { do_process $k  ; }
 }
 
